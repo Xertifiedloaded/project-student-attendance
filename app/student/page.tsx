@@ -63,7 +63,8 @@ export default function StudentDashboard() {
 
   const [farm, setFarm] = useState<Farm | null>(null)
 
-  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null)
+  const [fingerprintDataUrl, setFingerprintDataUrl] = useState<string | null>(null)
+  const [lastAttendance, setLastAttendance] = useState<any|null>(null)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
 
@@ -170,7 +171,7 @@ export default function StudentDashboard() {
         const file = input.files?.[0]
 
         if (!file) {
-          setMsg('No photo was taken.')
+          setMsg('No fingerprint image was provided.')
           return
         }
 
@@ -180,7 +181,7 @@ export default function StudentDashboard() {
           const result = reader.result
 
           if (typeof result === 'string') {
-            setPhotoDataUrl(result)
+            setFingerprintDataUrl(result)
           }
 
           setStep('photo')
@@ -203,8 +204,8 @@ export default function StudentDashboard() {
       return
     }
 
-    if (!photoDataUrl) {
-      setMsg('One photo and you’re done.')
+    if (!fingerprintDataUrl) {
+      setMsg('Provide a fingerprint scan (or upload an image) and you’re done.')
       return
     }
 
@@ -212,7 +213,7 @@ export default function StudentDashboard() {
     setMsg(null)
 
     try {
-      const base64 = photoDataUrl.split(',')[1]
+      const base64 = fingerprintDataUrl.split(',')[1]
 
       const res = await fetch('/api/attendance/checkin', {
         method: 'POST',
@@ -231,6 +232,7 @@ export default function StudentDashboard() {
 
       if (res.ok) {
         setStep('done')
+        setLastAttendance(data)
 
         setMsg(
           data.locationVerified
@@ -257,8 +259,8 @@ export default function StudentDashboard() {
     },
     {
       key: 'photo',
-      label: 'Say hello to the camera',
-      done: !!photoDataUrl,
+      label: 'Provide a fingerprint scan',
+      done: !!fingerprintDataUrl,
     },
     {
       key: 'confirm',
@@ -365,12 +367,11 @@ export default function StudentDashboard() {
                       </div>
                     )}
 
-                    {/* Photo */}
+                    {/* Fingerprint / Scan */}
                     {s.key === 'photo' && (
                       <div className="w-full">
                         <p className="mb-3 max-w-[470px] text-[13px] leading-5 text-[#746c60] sm:text-[13.5px] sm:leading-relaxed">
-                          Just a quick photo so there’s a record it was really
-                          you.
+                          Provide a fingerprint scan (or upload an image). This is used to record attendance.
                         </p>
 
                         <button
@@ -378,15 +379,15 @@ export default function StudentDashboard() {
                           onClick={handleOpenCamera}
                           className="flex min-h-11 w-full items-center justify-center rounded-[10px] bg-[#efe9dd] px-4 py-2.5 text-sm font-semibold text-[#3d382e] transition-colors hover:bg-[#e5ddca] sm:w-auto sm:min-w-[140px]"
                         >
-                          {photoDataUrl ? 'Retake photo' : 'Open camera'}
+                          {fingerprintDataUrl ? 'Retake scan' : 'Open scanner / upload'}
                         </button>
 
-                        {photoDataUrl && (
+                        {fingerprintDataUrl && (
                           <div className="mt-3 w-full">
                             <div className="relative w-full max-w-[240px] overflow-hidden rounded-xl border border-[#e2dccf] bg-[#f4f0e8] sm:max-w-[180px]">
                               <img
-                                src={photoDataUrl}
-                                alt="Your check-in photo"
+                                src={fingerprintDataUrl}
+                                alt="Your scan"
                                 className="aspect-square h-auto w-full object-cover"
                               />
                             </div>
@@ -406,7 +407,7 @@ export default function StudentDashboard() {
                         <button
                           type="button"
                           onClick={() => handleSubmit('Morning')}
-                          disabled={loading || !coords || !photoDataUrl}
+                          disabled={loading || !coords || !fingerprintDataUrl}
                           className="flex min-h-11 w-full items-center justify-center rounded-[10px] bg-[#56684a] px-4 py-2.5 text-sm font-semibold text-[#fdfbf7] transition-colors hover:bg-[#47563d] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[170px]"
                         >
                           {loading ? 'Sending…' : 'Submit attendance'}
@@ -429,6 +430,26 @@ export default function StudentDashboard() {
                 }`}
               >
                 {msg}
+              </div>
+            )}
+
+            {/* After successful attendance show summary with name, registered photo and time */}
+            {step === 'done' && lastAttendance && (
+              <div className="mt-4 w-full rounded-lg border p-4 bg-white">
+                <h4 className="mb-2 font-semibold">Attendance recorded</h4>
+                <div className="flex items-center gap-3">
+                  {lastAttendance.student?.photo ? (
+                    <img src={lastAttendance.student.photo} alt="Registered" className="w-16 h-16 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">No photo</div>
+                  )}
+
+                  <div>
+                    <div className="font-medium">{lastAttendance.student?.name || ''}</div>
+                    <div className="text-sm text-muted">{new Date(lastAttendance.attendance.timestamp).toLocaleString()}</div>
+                    <div className="text-sm mt-1">{lastAttendance.locationVerified ? 'Location verified' : 'Location needs review'}</div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Topbar from './components/Topbar'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </nav>
           </aside>
           <main className="flex-1 p-6 container">
+            {/* Topbar with logout */}
+            <Topbar />
             {children}
           </main>
         </div>

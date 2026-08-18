@@ -61,5 +61,8 @@ export async function POST(req){
   })
   await att.save()
 
-  return NextResponse.json({ ok: true, locationVerified })
+  // populate student's user info for response
+  const studentUser = await User.findById(student.user).lean()
+  return NextResponse.json({ ok: true, locationVerified, attendance: { id: att._id, timestamp: att.timestamp, shiftName: att.shiftName }, student: { name: studentUser?.name || '', photo: studentUser?.photo || '' } })
 }
+

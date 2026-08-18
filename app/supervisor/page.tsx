@@ -35,7 +35,15 @@ export default function SupervisorDashboard(){
           <tbody>
             {summary.students.map((s: any)=> (
               <tr key={s.studentId} className="border-t">
-                <td className="py-2">{s.name} <span className="text-xs text-muted">{s.studentId}</span></td>
+                <td className="py-2">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{s.name}</span>
+                      {s.photo ? <span className="text-xs text-green-700">●</span> : <span className="text-xs text-muted">○</span>}
+                    </div>
+                    <span className="text-xs text-muted">{s.studentId}</span>
+                  </div>
+                </td>
                 <td>{s.morningPresent}</td>
                 <td>{s.eveningPresent}</td>
                 <td>{s.totalPresent}</td>

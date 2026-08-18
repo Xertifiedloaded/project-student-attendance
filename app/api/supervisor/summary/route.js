@@ -44,6 +44,7 @@ export async function GET(req){
     return {
       studentId: s.studentId,
       name: s.user?.name || '',
+      photo: s.user?.photo || null,
       morningPresent,
       eveningPresent,
       totalPresent: sAtt.filter(a => a.status === 'PRESENT').length

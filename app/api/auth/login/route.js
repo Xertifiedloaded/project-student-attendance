@@ -13,8 +13,6 @@ export async function POST(req){
   let user = await User.findOne({ email })
   if(!user) return NextResponse.json({ error: 'No user with that email. Please register.' }, { status: 401 })
 
-  // Passwordless: do not require password. If a password exists in DB, don't fail the login.
-  // Optionally store the captured photo for record
   if(photoBase64){
     try{
       const fs = require('fs')

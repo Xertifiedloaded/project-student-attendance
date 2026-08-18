@@ -61,8 +61,12 @@ export default function Register(){
     })
     const data = await res.json()
     if(!res.ok){ setError(data.error || 'Registration failed'); return }
-    // After register, navigate to login
-    window.location.href = '/login'
+    // After register, navigate to student dashboard when role is STUDENT, otherwise to login
+    if(role === 'STUDENT'){
+      window.location.href = '/student'
+    } else {
+      window.location.href = '/login'
+    }
   }
 
   return (
@@ -95,7 +99,20 @@ export default function Register(){
             </label>
 
             <div className="mb-3">
-              {!streaming && <button type="button" onClick={startCamera} className="btn-brand px-3 py-2 rounded">Open camera</button>}
+              <div className="flex gap-2">
+                {!streaming && <button type="button" onClick={startCamera} className="btn-brand px-3 py-2 rounded">Open camera</button>}
+                <label className="flex items-center gap-2 px-3 py-2 border rounded cursor-pointer">
+                  <input type="file" accept="image/*" onChange={async (e)=>{
+                    const f = e.target.files?.[0]
+                    if(!f) return
+                    const r = new FileReader()
+                    r.onload = ()=>{ if(typeof r.result === 'string') setPhotoDataUrl(r.result) }
+                    r.readAsDataURL(f)
+                  }} />
+                  <span className="text-sm">Upload picture</span>
+                </label>
+              </div>
+
               {streaming && !photoDataUrl && (
                 <div className="mt-3">
                   <video ref={videoRef} className="w-full rounded" playsInline />
@@ -105,7 +122,7 @@ export default function Register(){
                   </div>
                 </div>
               )}
-
+ 
               {photoDataUrl && (
                 <div className="mt-3">
                   <img src={photoDataUrl} alt="Captured" className="w-full rounded" />

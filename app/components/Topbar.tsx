@@ -20,15 +20,22 @@ export default function Topbar(){
   }
 
   return (
-    <div className="flex items-center justify-between mb-4">
-      <div className="hidden sm:block">
-        <span className="text-sm text-muted">Signed in as</span>
-        <div className="font-semibold">{name}</div>
-      </div>
+    <header className="bg-white border-b">
+      <div className="max-w-7xl mx-auto px-6 flex items-center gap-4 py-3">
+        <div className="hidden sm:block">
+          <div className="text-sm text-gray-500">Signed in as</div>
+          <div className="font-semibold text-gray-800">{name}</div>
+        </div>
 
-      <div className="ml-auto">
-        <button onClick={handleLogout} className="px-3 py-2 rounded border text-sm">Logout</button>
+        <div className="ml-auto">
+          <button
+            onClick={handleLogout}
+            className="px-3 py-2 rounded-md border text-sm bg-transparent hover:bg-gray-50 text-gray-700"
+          >
+            Logout
+          </button>
+        </div>
       </div>
-    </div>
+    </header>
   )
 }

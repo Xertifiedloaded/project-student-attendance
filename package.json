@@ -17,6 +17,8 @@
     "exceljs": "^4.4.0",
     "formidable": "^3.5.4",
     "geolib": "^3.3.14",
+    "image-hash": "^7.0.1",
+    "jimp": "^1.6.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.3",
     "next": "16.3.1",

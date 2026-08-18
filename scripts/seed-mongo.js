@@ -41,13 +41,14 @@ async function seed() {
 
   // Create farm
   const farm = await Farm.create({
-    name: 'University Farm',
+    name: 'FUNAAB Hatchery',
 
-    // Replace these with the actual farm coordinates
-    latitude: 0.0,
-    longitude: 0.0,
+    // FUNAAB coordinates (campus center) — can adjust if a more precise hatchery point is known
+    latitude: 7.22976,
+    longitude: 3.43929,
 
-    radius: 100,
+    // radius in meters
+    radius: 300,
   })
 
   console.log(`✓ Farm created: ${farm.name}`)

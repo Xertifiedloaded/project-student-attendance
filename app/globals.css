@@ -26,7 +26,71 @@ body{
 .card { background: white; border: 1px solid var(--soft-gray); border-radius: 8px; padding: 1rem; }
 
 /* Responsive container */
-.container { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+
 
 /* Table small */
 .table-sm td, .table-sm th { padding: 0.5rem 0.75rem; }
+
+/* Ensure root elements fill the viewport so Tailwind h-full/min-h-screen works consistently */
+html, body, #__next {
+  height: 100%;
+  min-height: 100vh;
+}
+
+/* Ensure the main app container can expand to full viewport height when needed */
+main {
+  min-height: 100vh;
+  display: block;
+}
+
+/* Basic reset and design tokens for consistent production-ready UI */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --bg: var(--off-white);
+  --fg: #0f172a;
+  --muted: #6B6B6B;
+  --brand: var(--green-800);
+  --brand-600: var(--green-600);
+  --soft: #E6E6E6;
+  --radius: 8px;
+  --shadow-lg: 0 12px 30px rgba(17,24,39,0.12);
+}
+
+body { color: var(--fg); background: var(--bg); }
+
+/* Container for centered content */
+.container {
+  max-width: 1120px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+/* Topbar / header */
+.topbar {
+  background: white;
+  border-bottom: 1px solid rgba(15,23,42,0.04);
+}
+
+.text-muted { color: var(--muted); }
+
+/* Cards */
+.card { background: white; border-radius: var(--radius); border: 1px solid var(--soft); }
+.card--elevated { box-shadow: var(--shadow-lg); }
+
+/* Prefer Tailwind utility classes for form fields and buttons. */
+/* Use Tailwind utilities like:
+   - inputs: w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-4 focus:ring-emerald-100
+   - primary button: w-full px-4 py-3 rounded-lg bg-emerald-700 text-white
+   - ghost button: w-full px-4 py-3 rounded-lg border border-dashed border-gray-200 bg-white/60
+*/
+
+/* Accessibility helpers */
+.visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
+
+@media (max-width: 860px) {
+  .container { padding-left: 16px; padding-right: 16px; }
+}
+

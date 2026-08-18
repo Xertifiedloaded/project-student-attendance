@@ -63,7 +63,7 @@ export default function StudentDashboard() {
 
   const [farm, setFarm] = useState<Farm | null>(null)
 
-  const [fingerprintDataUrl, setFingerprintDataUrl] = useState<string | null>(null)
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null)
   const [lastAttendance, setLastAttendance] = useState<any|null>(null)
 
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -171,7 +171,7 @@ export default function StudentDashboard() {
         const file = input.files?.[0]
 
         if (!file) {
-          setMsg('No fingerprint image was provided.')
+          setMsg('No photo was provided.')
           return
         }
 
@@ -181,7 +181,7 @@ export default function StudentDashboard() {
           const result = reader.result
 
           if (typeof result === 'string') {
-            setFingerprintDataUrl(result)
+            setPhotoDataUrl(result)
           }
 
           setStep('photo')
@@ -204,8 +204,8 @@ export default function StudentDashboard() {
       return
     }
 
-    if (!fingerprintDataUrl) {
-      setMsg('Provide a fingerprint scan (or upload an image) and you’re done.')
+    if (!photoDataUrl) {
+      setMsg('Provide a photo (or upload an image) and you’re done.')
       return
     }
 
@@ -213,7 +213,7 @@ export default function StudentDashboard() {
     setMsg(null)
 
     try {
-      const base64 = fingerprintDataUrl.split(',')[1]
+      const base64 = photoDataUrl.split(',')[1]
 
       const res = await fetch('/api/attendance/checkin', {
         method: 'POST',
@@ -259,8 +259,8 @@ export default function StudentDashboard() {
     },
     {
       key: 'photo',
-      label: 'Provide a fingerprint scan',
-      done: !!fingerprintDataUrl,
+      label: 'Say hello to the camera',
+      done: !!photoDataUrl,
     },
     {
       key: 'confirm',
@@ -371,7 +371,7 @@ export default function StudentDashboard() {
                     {s.key === 'photo' && (
                       <div className="w-full">
                         <p className="mb-3 max-w-[470px] text-[13px] leading-5 text-[#746c60] sm:text-[13.5px] sm:leading-relaxed">
-                          Provide a fingerprint scan (or upload an image). This is used to record attendance.
+                          Just a quick photo so there’s a record it was really you.
                         </p>
 
                         <button
@@ -379,15 +379,15 @@ export default function StudentDashboard() {
                           onClick={handleOpenCamera}
                           className="flex min-h-11 w-full items-center justify-center rounded-[10px] bg-[#efe9dd] px-4 py-2.5 text-sm font-semibold text-[#3d382e] transition-colors hover:bg-[#e5ddca] sm:w-auto sm:min-w-[140px]"
                         >
-                          {fingerprintDataUrl ? 'Retake scan' : 'Open scanner / upload'}
+                          {photoDataUrl ? 'Retake photo' : 'Open camera / upload'}
                         </button>
 
-                        {fingerprintDataUrl && (
+                        {photoDataUrl && (
                           <div className="mt-3 w-full">
                             <div className="relative w-full max-w-[240px] overflow-hidden rounded-xl border border-[#e2dccf] bg-[#f4f0e8] sm:max-w-[180px]">
                               <img
-                                src={fingerprintDataUrl}
-                                alt="Your scan"
+                                src={photoDataUrl}
+                                alt="Your photo"
                                 className="aspect-square h-auto w-full object-cover"
                               />
                             </div>
@@ -407,7 +407,7 @@ export default function StudentDashboard() {
                         <button
                           type="button"
                           onClick={() => handleSubmit('Morning')}
-                          disabled={loading || !coords || !fingerprintDataUrl}
+                          disabled={loading || !coords || !photoDataUrl}
                           className="flex min-h-11 w-full items-center justify-center rounded-[10px] bg-[#56684a] px-4 py-2.5 text-sm font-semibold text-[#fdfbf7] transition-colors hover:bg-[#47563d] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-[170px]"
                         >
                           {loading ? 'Sending…' : 'Submit attendance'}

@@ -13,6 +13,10 @@ const AttendanceSchema = new Schema({
   distance: Number,
   photoPath: String,
   notes: String,
+  // If the system auto-verifies attendance (location + face match)
+  autoVerified: { type: Boolean, default: false },
+  verifiedAt: Date,
+  verifiedBy: String, // e.g. 'SYSTEM' or supervisor id
   correctedBy: Schema.Types.ObjectId,
   correctedAt: Date
 })

@@ -24,9 +24,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex min-h-screen text-slate-800">
+      <body className="min-h-full  min-h-screen text-slate-800">
         <div className="flex w-full">
-          <aside className="w-64 bg-brand text-white p-4 hidden md:block">
+          {/* <aside className="w-64 bg-brand text-white p-4 hidden md:block">
             <div className="text-lg font-semibold mb-6">Farm Attendance</div>
             <nav className="space-y-2 text-sm">
               <a href="/supervisor" className="block py-2 px-2 rounded hover:bg-green-700">Dashboard</a>
@@ -36,9 +36,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <a href="/supervisor/reports" className="block py-2 px-2 rounded hover:bg-green-700">Weekly Reports</a>
               <a href="/supervisor/settings" className="block py-2 px-2 rounded hover:bg-green-700">Settings</a>
             </nav>
-          </aside>
-          <main className="flex-1 p-6 container">
-            {/* Topbar with logout */}
+          </aside> */}
+          <main className="bg-black min-h-screen w-full">
             <Topbar />
             {children}
           </main>

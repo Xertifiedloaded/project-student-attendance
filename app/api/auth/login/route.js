@@ -1,20 +1,34 @@
 import { NextResponse } from 'next/server'
 import { connect } from '../../../../lib/mongo'
-import bcrypt from 'bcryptjs'
 import { sign } from '../../../../lib/auth'
 
 export async function POST(req){
-  const { email, password } = await req.json()
-  if(!email || !password) return NextResponse.json({ error: 'Missing' }, { status: 400 })
+  const body = await req.json()
+  const { email, password, photoBase64 } = body || {}
+  if(!email) return NextResponse.json({ error: 'Missing email' }, { status: 400 })
 
   const conn = await connect()
   if(!conn) return NextResponse.json({ error: 'Database not configured' }, { status: 500 })
   const User = require('../../../../models/User')
-  const user = await User.findOne({ email }).lean()
-  if(!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+  let user = await User.findOne({ email })
+  if(!user) return NextResponse.json({ error: 'No user with that email. Please register.' }, { status: 401 })
 
-  const ok = bcrypt.compareSync(password, user.password || '')
-  if(!ok) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 })
+  // Passwordless: do not require password. If a password exists in DB, don't fail the login.
+  // Optionally store the captured photo for record
+  if(photoBase64){
+    try{
+      const fs = require('fs')
+      const path = require('path')
+      const filename = `${Date.now()}-${(email).replace(/[^a-z0-9\\-_.@]/gi,'')}.jpg`
+      const uploadsDir = path.join(process.cwd(), 'public', 'uploads')
+      if(!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true })
+      const dest = path.join(uploadsDir, filename)
+      const b = Buffer.from(photoBase64, 'base64')
+      fs.writeFileSync(dest, b)
+      user.photo = `/uploads/${filename}`
+      await user.save()
+    }catch(e){}
+  }
 
   const token = sign({ userId: user._id, role: user.role, name: user.name, email: user.email })
   const res = NextResponse.json({ ok: true, role: user.role })

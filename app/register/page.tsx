@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-export default function Login(){
+export default function Register(){
   const [email,setEmail] = useState('')
+  const [name,setName] = useState('')
+  const [role,setRole] = useState('STUDENT')
   const [error,setError] = useState<string|null>(null)
   const [streaming,setStreaming] = useState(false)
   const videoRef = useRef<HTMLVideoElement|null>(null)
@@ -51,18 +53,16 @@ export default function Login(){
     e?.preventDefault()
     setError(null)
     if(!email) { setError('Please enter your email'); return }
-    // send email and face capture (if present). Password is not required.
     const base64 = photoDataUrl ? photoDataUrl.split(',')[1] : null
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, photoBase64: base64 })
+      body: JSON.stringify({ email, name, role, photoBase64: base64 })
     })
     const data = await res.json()
-    if(!res.ok){ setError(data.error || 'Login failed'); return }
-    const role = data?.role || 'STUDENT'
-    if(role === 'SUPERVISOR') window.location.href = '/supervisor'
-    else window.location.href = '/student'
+    if(!res.ok){ setError(data.error || 'Registration failed'); return }
+    // After register, navigate to login
+    window.location.href = '/login'
   }
 
   return (
@@ -76,12 +76,22 @@ export default function Login(){
         </div>
 
         <div className="bg-white p-6 rounded">
-          <h2 className="text-xl font-semibold mb-4 text-slate-800">Sign in</h2>
+          <h2 className="text-xl font-semibold mb-4 text-slate-800">Register</h2>
           {error && <div className="mb-2 text-sm text-red-600">{error}</div>}
 
           <form onSubmit={submit}>
             <label className="block mb-2 text-sm text-muted">Email
               <input className="w-full border p-2 mt-1 rounded" value={email} onChange={(e)=>setEmail(e.target.value)} />
+            </label>
+            <label className="block mb-2 text-sm text-muted">Full name
+              <input className="w-full border p-2 mt-1 rounded" value={name} onChange={(e)=>setName(e.target.value)} />
+            </label>
+
+            <label className="block mb-4 text-sm text-muted">Role
+              <select className="w-full border p-2 mt-1 rounded" value={role} onChange={(e)=>setRole(e.target.value)}>
+                <option value="STUDENT">Student</option>
+                <option value="SUPERVISOR">Supervisor</option>
+              </select>
             </label>
 
             <div className="mb-3">
@@ -107,8 +117,8 @@ export default function Login(){
             </div>
 
             <div className="flex gap-2">
-              <button className="w-full btn-brand py-2 rounded">Sign in</button>
-              <a href="/register" className="w-full text-center py-2 rounded border">Register</a>
+              <button className="w-full btn-brand py-2 rounded">Register</button>
+              <a href="/login" className="w-full text-center py-2 rounded border">Back to login</a>
             </div>
           </form>
 

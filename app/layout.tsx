@@ -23,7 +23,24 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex min-h-screen text-slate-800">
+        <div className="flex w-full">
+          <aside className="w-64 bg-brand text-white p-4 hidden md:block">
+            <div className="text-lg font-semibold mb-6">Farm Attendance</div>
+            <nav className="space-y-2 text-sm">
+              <a href="/supervisor" className="block py-2 px-2 rounded hover:bg-green-700">Dashboard</a>
+              <a href="/supervisor/students" className="block py-2 px-2 rounded hover:bg-green-700">Students</a>
+              <a href="/supervisor/attendance" className="block py-2 px-2 rounded hover:bg-green-700">Attendance</a>
+              <a href="/supervisor/data" className="block py-2 px-2 rounded hover:bg-green-700">Data Collection</a>
+              <a href="/supervisor/reports" className="block py-2 px-2 rounded hover:bg-green-700">Weekly Reports</a>
+              <a href="/supervisor/settings" className="block py-2 px-2 rounded hover:bg-green-700">Settings</a>
+            </nav>
+          </aside>
+          <main className="flex-1 p-6 container">
+            {children}
+          </main>
+        </div>
+      </body>
     </html>
   );
 }

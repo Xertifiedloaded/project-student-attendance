@@ -1,0 +1,4 @@
+// schema.prisma retained as a reference but the runtime has migrated to MongoDB.
+// Prisma and SQLite artifacts were removed from runtime. Do not use this schema for the running app.
+
+// Prisma schema removed — application is using MongoDB (Mongoose).

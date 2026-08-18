@@ -1,0 +1,1 @@
+// Prisma config removed — project uses MongoDB (Mongoose).

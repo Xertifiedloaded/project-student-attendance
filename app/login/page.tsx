@@ -19,8 +19,13 @@ export default function Login(){
     })
     const data = await res.json()
     if(!res.ok){ setError(data.error || 'Login failed'); return }
-    // redirect based on role could be implemented; default to student
-    router.push('/student')
+    // redirect based on role — use full navigation so the auth cookie set by the server is present on the next page
+    const role = data?.role || 'STUDENT'
+    if (role === 'SUPERVISOR') {
+      window.location.href = '/supervisor'
+    } else {
+      window.location.href = '/student'
+    }
   }
 
   return (

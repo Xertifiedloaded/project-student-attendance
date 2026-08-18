@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server'
 import { connect } from '../../../../lib/mongo'
+import { verify } from '../../../../lib/auth'
 import ExcelJS from 'exceljs'
 
 export async function GET(req){
+  // require authenticated supervisor
+  const token = req.cookies.get('token')?.value
+  const user = verify(token)
+  if(!user) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 })
+  if(user.role !== 'SUPERVISOR') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
   await connect()
   const url = new URL(req.url)
   const scope = url.searchParams.get('scope') || 'current-week'
